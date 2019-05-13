@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
-use App\Http\Requests\UserUpdateRequest;
+use App\Http\Requests\UserRequest;
 
 class UserController extends Controller
 {
@@ -18,6 +18,32 @@ class UserController extends Controller
         return view('user.index')->with('users', User::paginate(15));
     }
 
+
+    /**
+     * Show the form for creating the specified resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('user.edit');       
+    }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(UserRequest $request)
+    {
+        $data = $request->all();
+        $data['password'] = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+
+        User::create($data);
+
+        return redirect('user');
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -37,11 +63,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserRequest $request, User $user)
     {
-        User::whereId($user)->update($request->except('id','_method','_token'));
+        User::whereId($user->id)->update($request->except('id','_method','_token'));
 
-        return $request->all();
+        return redirect('user');
     }
 
 }
